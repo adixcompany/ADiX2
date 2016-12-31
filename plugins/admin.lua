@@ -6,11 +6,11 @@ local function set_bot_photo(msg, success, result)
     os.rename(result, file)
     print('File moved to:', file)
     set_profile_photo(file, ok_cb, false)
-    send_large_msg(receiver, 'Photo changed!', ok_cb, false)
+    send_large_msg(receiver, 'عکس ربات تغییر یافت!', ok_cb, false)
     redis:del("bot:photo")
   else
     print('Error downloading: '..msg.id)
-    send_large_msg(receiver, 'Failed, please try again!', ok_cb, false)
+    send_large_msg(receiver, 'Error!System cant download file.Please see bot catalog with /help !Error code: X1!', ok_cb, false)
   end
 end
 
@@ -77,10 +77,10 @@ local function get_dialog_list_callback(cb_extra, success, result)
   for k,v in pairsByKeys(result) do
     if v.peer then
       if v.peer.type == "chat" then
-        text = text.."group{"..v.peer.title.."}["..v.peer.id.."]("..v.peer.members_num..")"
+        text = text.."گروه{"..v.peer.title.."}["..v.peer.id.."]("..v.peer.members_num..")"
       else
         if v.peer.print_name and v.peer.id then
-          text = text.."user{"..v.peer.print_name.."}["..v.peer.id.."]"
+          text = text.."کاربر{"..v.peer.print_name.."}["..v.peer.id.."]"
         end
         if v.peer.username then
           text = text.."("..v.peer.username..")"
@@ -91,16 +91,16 @@ local function get_dialog_list_callback(cb_extra, success, result)
       end
     end
     if v.message then
-      text = text..'\nlast msg >\nmsg id = '..v.message.id
+      text = text..'\nپیام قبلی >\nآیدی پیام = '..v.message.id
       if v.message.text then
-        text = text .. "\n text = "..v.message.text
+        text = text .. "\n متن = "..v.message.text
       end
       if v.message.action then
         text = text.."\n"..serpent.block(v.message.action, {comment=false})
       end
       if v.message.from then
         if v.message.from.print_name then
-          text = text.."\n From > \n"..string.gsub(v.message.from.print_name, "_"," ").."["..v.message.from.id.."]"
+          text = text.."\n از طرف > \n"..string.gsub(v.message.from.print_name, "_"," ").."["..v.message.from.id.."]"
         end
         if v.message.from.username then
           text = text.."( "..v.message.from.username.." )"
@@ -167,35 +167,35 @@ local function run(msg,matches)
     end
     if matches[1] == "setbotphoto" then
     	redis:set("bot:photo", "waiting")
-    	return 'Please send me bot photo now'
+    	return 'عکس جدید ربات را لطفا ارسال کنید.دقت کنید لوگو ربات باشد!'
     end
     if matches[1] == "markread" then
     	if matches[2] == "on" then
     		redis:set("bot:markread", "on")
-    		return "Mark read > on"
+    		return "مشاهده پیام ها فعال شد"
     	end
     	if matches[2] == "off" then
     		redis:del("bot:markread")
-    		return "Mark read > off"
+    		return "مشاهده پیام ها خاموش شد"
     	end
     	return
     end
     if matches[1] == "pm" then
-    	local text = "Message From "..(msg.from.username or msg.from.last_name).."\n\nMessage : "..matches[3]
+    	local text = "پیام جدید از "..(msg.from.username or msg.from.last_name).."\n\پیام : "..matches[3]
     	send_large_msg("user#id"..matches[2],text)
-    	return "Message has been sent"
+    	return "پیام ارسال شد"
     end
     
     if matches[1] == "pmblock" then
     	if is_admin2(matches[2]) then
-    		return "You can't block admins"
+    		return "شما نمیتوانید مدیران را مسدود کنید.استفاده ازین دستور بر روی مدیران عواقب ناخوشایندی دارد!"
     	end
     	block_user("user#id"..matches[2],ok_cb,false)
-    	return "User blocked"
+    	return "کاربر مسدود شد.برای خارج کردن از این حالت کاتالوگ ربات را در /help بخوانید!"
     end
     if matches[1] == "pmunblock" then
     	unblock_user("user#id"..matches[2],ok_cb,false)
-    	return "User unblocked"
+    	return "کاربر از حالت مسدود خارج شد"
     end
     if matches[1] == "import" then--join by group link
     	local hash = parsed_url(matches[2])
@@ -206,21 +206,21 @@ local function run(msg,matches)
     		return
     	end
       get_contact_list(get_contact_list_callback, {target = msg.from.id})
-      return "I've sent contact list with both json and text format to your private"
+      return "مخاطبین ارسال شد!"
     end
     if matches[1] == "delcontact" then
 	    if not is_sudo(msg) then-- Sudo only
     		return
     	end
       del_contact("user#id"..matches[2],ok_cb,false)
-      return "User "..matches[2].." removed from contact list"
+      return "مخاطب "..matches[2].." از لیست مخاطبین حذف شد"
     end
     if matches[1] == "addcontact" and is_sudo(msg) then
     phone = matches[2]
     first_name = matches[3]
     last_name = matches[4]
     add_contact(phone, first_name, last_name, ok_cb, false)
-   return "User With Phone +"..matches[2].." has been added"
+   return "Added 🌀✔️"
 end
  if matches[1] == "sendcontact" and is_sudo(msg) then
     phone = matches[2]
@@ -230,7 +230,7 @@ end
 end
  if matches[1] == "mycontact" and is_sudo(msg) then
 	if not msg.from.phone then
-		return "I must Have Your Phone Number!"
+		return "موجود نیست!شماره خود را از طریق اکانت ربات اضافه کنید"
     end
     phone = msg.from.phone
     first_name = (msg.from.first_name or msg.from.phone)
@@ -240,7 +240,7 @@ end
 
     if matches[1] == "dialoglist" then
       get_dialog_list(get_dialog_list_callback, {target = msg.from.id})
-      return "I've sent a group dialog list with both json and text format to your private messages"
+      return "دیالوگ لیست ارسال شد"
     end
     if matches[1] == "whois" then
       user_info("user#id"..matches[2],user_info_callback,{msg=msg})
@@ -261,8 +261,8 @@ end
 	if matches[1] == 'reload' then
 		receiver = get_receiver(msg)
 		reload_plugins(true)
-		post_msg(receiver, "Reloaded!", ok_cb, false)
-		return "Reloaded!"
+		post_msg(receiver, "🌀 OK", ok_cb, false)
+		return "🌀 OK"
 	end
 	--[[*For Debug*
 	if matches[1] == "vardumpmsg" and is_admin1(msg) then
@@ -275,7 +275,7 @@ end
 		if not long_id then
 			data[tostring(msg.to.id)]['long_id'] = msg.to.peer_id 
 			save_data(_config.moderation.data, data)
-			return "Updated ID"
+			return "آیدی بروزرسانی شد"
 		end
 	end
 	if matches[1] == 'addlog' and not matches[2] then
