@@ -203,12 +203,12 @@ if to == 'user' or service or is_admin1(msg) and to == "chat" or to == "channel"
 		local user_name = msg.action.user.print_name
 		print("Added "..user_id.." to chat "..msg.to.print_name.." (ID:"..msg.to.id..")")
 		savelog(msg.from.id, "Added "..user_name.." to chat "..msg.to.print_name.." (ID:"..msg.to.id..")")
-		send_large_msg("user#id"..user_id, "Added you to chat:\n\n"..group_name.." (ID:"..msg.to.id..")")
+		send_large_msg("user#id"..user_id, "اضافه شدید!\n\nاطلاعات  گروه: "..group_name.." (ID:"..msg.to.id..")")
 	end
 
 	if matches[1] == 'help' and msg.to.type == 'user' or matches[1] == 'pmhelp' and is_admin1(msg) and msg.to.type ~= 'user' then
       	savelog(msg.to.id, name_log.." ["..msg.from.id.."] used pm help")
-		text = "Welcome to TeleSeed!\n\nTo get a list of TeleSeed groups use /chats or /chatlist for a document list of chats.\n\nTo get a new TeleSeed group, contact a support group:\n\nFor English support, use: /join English support\n\nFor Persian support, use: /join Persian support\n\nFor more information, check out our channels:\n\n@TeleseedCH [English]\n@Iranseed [Persian]\n\nThanks for using @TeleSeed!"
+		text = "به ربات آدیکس 2 خوش آمدید! این ربات ساخته شده برای مدیریت گروه های تلگرام با جدیدترین ایده ها از سوی متخصصین کمپانی آدیکس شکل گرفته است.یکی از ویژگی های این ربات کاربری بر روی یک کاتالوگ است و داشتن راهنما دوری شده است!برای اطلاعات بیشتر در @adixco عضو شوید!"
      	return text
     end
 
