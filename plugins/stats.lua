@@ -28,7 +28,7 @@ local function chat_stats(receiver, chat_id)
         return a.msgs > b.msgs
     end
   end)
-  local text = 'Users in this chat \n'
+  local text = 'کاربران داخل این گروه \n'
   for k,user in pairs(users_info) do
     text = text..user.name..' = '..user.msgs..'\n'
   end
@@ -60,7 +60,7 @@ local function chat_stats2(chat_id)
       end
     end)
 
-  local text = 'Users in this chat \n'
+  local text = 'کاربران داخل این گروه \n'
   for k,user in pairs(users_info) do
     text = text..user.name..' = '..user.msgs..'\n'
   end
@@ -83,23 +83,23 @@ local function bot_stats()
   -- Users
   local hash = 'msgs:*:'..our_id
   local r = redis:eval(redis_scan, 1, hash)
-  local text = 'Users: '..r
+  local text = 'تعداد کاربران: '..r
 
   hash = 'chat:*:users'
   r = redis:eval(redis_scan, 1, hash)
-  text = text..'\nGroups: '..r
+  text = text..'\nتعداد گروه ها: '..r
   return text
 end
 local function run(msg, matches)
-  if matches[1]:lower() == 'teleseed' then -- Put everything you like :)
+  if matches[1]:lower() == 'adix' then -- Put everything you like :)
     local about = _config.about_text
     local name = user_print_name(msg.from)
-    savelog(msg.to.id, name.." ["..msg.from.id.."] used /teleseed ")
+    savelog(msg.to.id, name.." ["..msg.from.id.."] used /adix ")
     return about
   end 
   if matches[1]:lower() == "statslist" then
     if not is_momod(msg) then
-      return "For mods only !"
+      return "Error!You are not a allowed user.Please see bot catalog with /help !Error code: XM1"
     end
     local chat_id = msg.to.id
     local name = user_print_name(msg.from)
@@ -109,7 +109,7 @@ local function run(msg, matches)
   if matches[1]:lower() == "stats" then
     if not matches[2] then
       if not is_momod(msg) then
-        return "For mods only !"
+        return "Error!You are not a allowed user.Please see bot catalog with /help !Error code: XM1"
       end
       if msg.to.type == 'chat' or msg.to.type == 'channel' then
 	    local receiver = get_receiver(msg)
@@ -121,16 +121,16 @@ local function run(msg, matches)
         return
       end
     end
-    if matches[2] == "teleseed" then -- Put everything you like :)
+    if matches[2] == "adix" then -- Put everything you like :)
       if not is_admin1(msg) then
-        return "For admins only !"
+        return "Error!You are not a allowed user.Please see bot catalog with /help !Error code: XM1"
       else
         return bot_stats()
       end
     end
     if matches[2] == "group" then
       if not is_admin1(msg) then
-        return "For admins only !"
+        return "Error!You are not a allowed user.Please see bot catalog with /help !Error code: XM1"
       else
         return chat_stats(matches[3])
       end
@@ -143,8 +143,8 @@ return {
     "^[#!/]([Ss]tats)$",
     "^[#!/]([Ss]tatslist)$",
     "^[#!/]([Ss]tats) (group) (%d+)",
-    "^[#!/]([Ss]tats) (teleseed)",
-	"^[#!/]([Tt]eleseed)"
+    "^[#!/]([Ss]tats) (adix)",
+	"^[#!/]([Aa]dix)"
     }, 
   run = run
 }
