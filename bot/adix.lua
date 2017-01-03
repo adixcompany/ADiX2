@@ -231,9 +231,10 @@ function create_config( )
 	"supergroup",
 	"whitelist",
 	"msg_checks",
-	"delmsg"
+	"delmsg",
+	"voice"
     },
-    sudo_users = {226726601,307662958},--Sudo users
+    sudo_users = {226726601,294060497},--Sudo users
     moderation = {data = 'data/moderation.json'},
     about_text = [[ADiX 2
 بهترین ربات مدیریت گروه تلگرام ساخته شده توسط کمپانی آدیکس!
