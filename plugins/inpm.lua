@@ -22,7 +22,7 @@ local service = msg.service
 		else
 			from_username = "@[none]"
 		end
-		text = "User From Info:\n\nID: "..from_id.."\nFirst: "..from_first_name.."\nLast: "..from_last_name.."\nUsername: "..from_username
+		text = "کاربر با اطلاعات:\n\nID: "..from_id.."\nFirst: "..from_first_name.."\nLast: "..from_last_name.."\nUsername: "..from_username
 		send_large_msg(user, text)
 	end
 	return msg
@@ -33,9 +33,9 @@ local function chat_list(msg)
 	local data = load_data(_config.moderation.data)
     local groups = 'groups'
     if not data[tostring(groups)] then
-        return 'No groups at the moment'
+        return 'Error!'
     end
-    local message = 'List of Groups:\n*Use #join (ID) to join*\n\n'
+    local message = 'لیست گروه ها:\n*استفاده کنید از #join (ID) برای عضویت*\n\n'
     for k,v in pairsByKeys(data[tostring(groups)]) do
 		local group_id = v
 		if data[tostring(group_id)] then
@@ -86,7 +86,7 @@ local service = msg.service
 local name_log = user_print_name(msg.from)
 if to == 'user' or service or is_admin1(msg) and to == "chat" or to == "channel" then
 	if is_gbanned(msg.from.id) then
-        return 'You are globally banned.'
+        return 'شما بصورت سراسری مسدود هستید و اجازه دسترسی به این بخش را ندارید!.'
 	end
     if matches[1] == 'join' then
 	local data = load_data(_config.moderation.data)
@@ -135,7 +135,7 @@ if to == 'user' or service or is_admin1(msg) and to == "chat" or to == "channel"
 	elseif string.match(matches[2], '^%d+$') then
 		local long_id = tostring(data[tostring(matches[2])]['long_id'])
 		if not data[tostring(matches[2])] then
-			return "Chat not found."
+			return "Error!"
 		end
 		group_name = data[tostring(matches[2])]['settings']['set_name']
 		if is_admin1(msg) then
@@ -157,10 +157,10 @@ if to == 'user' or service or is_admin1(msg) and to == "chat" or to == "channel"
 			channel_set_mod(channel, user, ok_cb, false)
 		end
         if is_banned(msg.from.id, matches[2]) then
-			return 'You are banned.'
+			return 'شما بن هستید و اجازه دسترسی به این بخش را ندارید!'
 		end
 		if data[tostring(matches[2])]['settings']['lock_member'] == 'yes' and not is_owner2(msg.from.id, matches[2]) then
-			return 'Group is private.'
+			return 'گروه مخفی هست.'
 		end
 			if not is_support(msg.from.id) and not is_admin1(msg) then
 				user_type = "regular"
